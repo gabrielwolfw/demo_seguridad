@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>BancoDemo — Registrar autenticador</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: white; border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      padding: 40px 36px; width: 400px; text-align: center;
+    }
+    h2 { font-size: 20px; color: #1a202c; margin-bottom: 8px; }
+    p { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
+    #qrcode { display: flex; justify-content: center; margin-bottom: 20px; }
+    .secret {
+      background: #f3f4f6; border-radius: 8px;
+      padding: 12px; font-family: monospace;
+      font-size: 16px; color: #1a202c;
+      letter-spacing: 2px; margin-bottom: 20px;
+    }
+    .hint { font-size: 12px; color: #9ca3af; margin-bottom: 20px; }
+    a {
+      display: inline-block; color: #1a56db;
+      font-size: 14px; text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Registrar autenticador TOTP</h2>
+    <p>Escanea este QR con Google Authenticator, Aegis o cualquier app compatible.</p>
+    <div id="qrcode"></div>
+    <div class="hint">O ingresa la clave manualmente:</div>
+    <div class="secret">{{ secret }}</div>
+    <div class="hint">Credenciales de demo: usuario / password123</div>
+    <a href="/login">← Volver al login</a>
+  </div>
+  <script>
+    new QRCode(document.getElementById("qrcode"), {
+      text: "{{ uri }}",
+      width: 200, height: 200
+    });
+  </script>
+</body>
+</html>
