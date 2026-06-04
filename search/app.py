@@ -6,7 +6,10 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     query = (request.args.get("q") or "").strip()
-    return render_template("index.html", query=query)
+    query_lower = query.lower()
+    allowed_terms = ["banco", "banco demo", "bancodemo", "banco-demo"]
+    allowed = any(term in query_lower for term in allowed_terms)
+    return render_template("index.html", query=query, allowed=allowed)
 
 if __name__ == "__main__":
     if os.environ.get("WERKZEUG_RUN_MAIN") == "true":

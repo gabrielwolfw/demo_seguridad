@@ -28,6 +28,16 @@
     .card-title { font-weight: bold; margin-bottom: 6px; }
     .map { height: 160px; border-radius: 8px; background: linear-gradient(135deg, #cfe8ff, #f7f7f7); display: flex; align-items: center; justify-content: center; color: #2b3a55; font-size: 13px; border: 1px solid #d2d2d2; }
     .news-item { margin: 10px 0; }
+    .offline { margin-top: 18px; }
+    .game-area { position: relative; height: 200px; border: 1px dashed #b8b8b8; border-radius: 10px; background: #f6f6f6; overflow: hidden; }
+    .game-ground { position: absolute; left: 0; right: 0; bottom: 16px; height: 2px; background: #c9c9c9; }
+    .game-square { position: absolute; left: 24px; bottom: 18px; width: 22px; height: 22px; background: #1a73e8; border-radius: 4px; }
+    .game-obstacle { position: absolute; right: -30px; bottom: 18px; width: 16px; height: 28px; background: #f45b69; border-radius: 3px; }
+    .game-hint { margin: 8px 0; font-size: 13px; color: #666; }
+    .game-score { margin-top: 8px; font-size: 14px; }
+    .game-reset { margin-top: 8px; padding: 6px 10px; border: 1px solid #d0d0d0; border-radius: 6px; background: #fff; cursor: pointer; }
+    .game-over { display: none; margin-top: 10px; font-size: 14px; color: #b00020; }
+    .game-over strong { display: block; margin-bottom: 4px; }
   </style>
 </head>
 <body>
@@ -48,6 +58,7 @@
     </form>
   </div>
 
+  {% if allowed %}
   <div class="tabs">
     <span class="active">Todo</span>
     <span>Noticias</span>
@@ -110,6 +121,129 @@
       </div>
     </div>
   </div>
+  {% else %}
+  <div class="offline">
+    <div class="card">
+      <div class="card-title">Sin conexion</div>
+      <div class="snippet">No se pudo obtener resultados para "{{ query }}". Juega un momento mientras reintentas.</div>
+      <div class="game-hint">Presiona espacio para iniciar y saltar.</div>
+      <div class="game-area" id="game-area">
+        <div class="game-ground"></div>
+        <div class="game-square" id="game-square" aria-label="Jugador"></div>
+        <div class="game-obstacle" id="game-obstacle" aria-label="Obstaculo"></div>
+      </div>
+      <div class="game-score">Puntos: <span id="score">0</span></div>
+      <div class="game-over" id="game-over">
+        <strong>Game over</strong>
+        Presiona reiniciar o espacio para intentar de nuevo.
+      </div>
+      <button class="game-reset" id="game-reset" type="button">Reiniciar</button>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var area = document.getElementById("game-area");
+      var square = document.getElementById("game-square");
+      var obstacle = document.getElementById("game-obstacle");
+      var scoreEl = document.getElementById("score");
+      var gameOverEl = document.getElementById("game-over");
+      var resetBtn = document.getElementById("game-reset");
+      var running = false;
+      var score = 0;
+      var velocityY = 0;
+      var gravity = -0.7;
+      var jumpVelocity = 11;
+      var groundY = 18;
+      var squareY = 0;
+      var obstacleX = 0;
+      var lastTime = 0;
+
+      function resetGame() {
+        running = false;
+        score = 0;
+        velocityY = 0;
+        squareY = 0;
+        obstacleX = area.clientWidth + 20;
+        scoreEl.textContent = "0";
+        gameOverEl.style.display = "none";
+        square.style.bottom = groundY + "px";
+        obstacle.style.right = "-30px";
+        obstacle.style.left = "";
+      }
+
+      function startGame() {
+        if (!running) {
+          running = true;
+          gameOverEl.style.display = "none";
+          lastTime = performance.now();
+          requestAnimationFrame(tick);
+        }
+      }
+
+      function jump() {
+        if (!running) {
+          startGame();
+        }
+        if (squareY === 0) {
+          velocityY = jumpVelocity;
+        }
+      }
+
+      function tick(time) {
+        var delta = Math.min(32, time - lastTime);
+        lastTime = time;
+
+        velocityY += gravity * (delta / 16);
+        squareY += velocityY;
+        if (squareY < 0) {
+          squareY = 0;
+          velocityY = 0;
+        }
+        square.style.bottom = (groundY + squareY) + "px";
+
+        obstacleX -= 6 * (delta / 16);
+        if (obstacleX < -20) {
+          obstacleX = area.clientWidth + 20;
+          score += 1;
+          scoreEl.textContent = String(score);
+        }
+        obstacle.style.left = obstacleX + "px";
+
+        var squareRect = square.getBoundingClientRect();
+        var obstacleRect = obstacle.getBoundingClientRect();
+        if (
+          squareRect.right > obstacleRect.left + 2 &&
+          squareRect.left < obstacleRect.right - 2 &&
+          squareRect.bottom > obstacleRect.top + 2
+        ) {
+          running = false;
+          gameOverEl.style.display = "block";
+          return;
+        }
+
+        if (running) {
+          requestAnimationFrame(tick);
+        }
+      }
+
+      document.addEventListener("keydown", function (event) {
+        if (event.code === "Space") {
+          event.preventDefault();
+          if (!running && score > 0) {
+            resetGame();
+          }
+          jump();
+        }
+      });
+
+      resetBtn.addEventListener("click", function () {
+        resetGame();
+      });
+
+      resetGame();
+    })();
+  </script>
+  {% endif %}
   {% endif %}
 </body>
 </html>
