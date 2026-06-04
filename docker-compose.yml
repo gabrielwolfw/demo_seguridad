@@ -19,6 +19,14 @@ services:
     depends_on:
       - legitimate
 
+  search:
+    build: ./search
+    container_name: buscador-demo
+    ports:
+      - "5002:5002"
+    networks:
+      - demo-net
+
 networks:
   demo-net:
     driver: bridge

@@ -6,7 +6,7 @@ CE-1115 Seguridad de la Información — Tema 3: MFA
 ## Requisitos
 
 - Docker y Docker Compose instalados
-- Puertos 5000 y 5001 libres
+- Puertos 5000, 5001 y 5002 libres
 - Aegis, Google Authenticator o cualquier app TOTP en el celular
 
 ---
@@ -18,6 +18,13 @@ CE-1115 Seguridad de la Información — Tema 3: MFA
 docker compose up --build
 ```
 
+Cuando termine, deberias ver en la terminal algo como:
+```
+buscador-demo  |  * Search demo running at http://127.0.0.1:5002
+```
+
+Abrir el buscador falso (opcional): http://localhost:5002
+
 **2. Registrar el autenticador**
 
 Abrir en el browser: http://localhost:5000/qr
@@ -28,7 +35,7 @@ Escanear el QR con la app del celular. Esto registra la cuenta "BancoDemo" en el
 
 ## Durante la demo
 
-Abrir dos terminales y dos ventanas del browser.
+Abrir dos terminales y tres ventanas del browser.
 
 **Terminal 1 — mantener corriendo:**
 ```bash
@@ -40,12 +47,17 @@ docker compose up
 docker logs -f sitio-phishing
 ```
 
-**Browser 1 — sitio legítimo:**
+**Browser 1 — buscador falso (opcional):**
+```
+http://localhost:5002
+```
+
+**Browser 2 — sitio legítimo:**
 ```
 http://localhost:5000/login
 ```
 
-**Browser 2 — sitio falso:**
+**Browser 3 — sitio falso:**
 ```
 http://localhost:5001
 ```
@@ -56,22 +68,26 @@ http://localhost:5001
 
 **Paso 1 — mostrar el sitio legítimo**
 
-En browser 1 hacer login con:
+En browser 2 hacer login con:
 - Usuario: `usuario`
 - Contraseña: `password123`
 - TOTP: código actual del celular
 
 Mostrar que funciona. Cerrar sesión.
 
-**Paso 2 — mostrar el sitio falso**
+**Paso 2 — mostrar el buscador falso (opcional)**
 
-Abrir browser 2. Señalar que se ve idéntico al legítimo.
+Abrir browser 1. Escribir "banco demo" en la barra y dar click en Buscar. Señalar que hay dos resultados muy similares y elegir el falso.
 
-**Paso 3 — el ataque**
+**Paso 3 — mostrar el sitio falso**
 
-En browser 2 llenar el form con las mismas credenciales y el código TOTP actual. Hacer submit rápido.
+Abrir browser 3. Señalar que se ve idéntico al legítimo.
 
-**Paso 4 — mostrar la terminal 2**
+**Paso 4 — el ataque**
+
+En browser 3 llenar el form con las mismas credenciales y el código TOTP actual. Hacer submit rápido.
+
+**Paso 5 — mostrar la terminal 2**
 
 Aparece algo así:
 ```
@@ -85,13 +101,13 @@ Aparece algo así:
 [14:23:01] ====================================================
 ```
 
-**Paso 5 — mostrar lo que ve la víctima**
+**Paso 6 — mostrar lo que ve la víctima**
 
-Browser 2 muestra "Credenciales incorrectas". La víctima no sabe que sus credenciales fueron robadas y usadas.
+Browser 2 redirige al login del sitio legitimo (http://localhost:5000/login). La víctima no sabe que sus credenciales fueron robadas y usadas.
 
-**Paso 6 — cerrar el argumento**
+**Paso 7 — cerrar el argumento**
 
-Volver a browser 1 e ingresar con las mismas credenciales y el mismo código TOTP (si no expiró). El banco real acepta el login.
+Volver a browser 2 e ingresar con las mismas credenciales y el mismo código TOTP (si no expiró). El banco real acepta el login.
 
 ---
 

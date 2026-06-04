@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resultados de busqueda - BancoDemo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px 32px; color: #222; }
+    .home { display: flex; flex-direction: column; align-items: center; margin-top: 120px; }
+    .logo { font-weight: bold; font-size: 34px; margin-bottom: 22px; }
+    .header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .header .logo { font-size: 22px; margin-bottom: 0; }
+    .searchbar { display: flex; align-items: center; gap: 8px; width: 100%; max-width: 720px; }
+    .searchbar input { flex: 1; padding: 10px 14px; border: 1px solid #dfe1e5; border-radius: 24px; font-size: 16px; }
+    .searchbar button { padding: 9px 14px; border: 1px solid #dfe1e5; border-radius: 6px; background: #f8f9fa; cursor: pointer; }
+    .tabs { display: flex; gap: 18px; color: #1f1f1f; font-size: 14px; margin: 4px 0 16px; }
+    .tabs span { padding-bottom: 6px; }
+    .tabs .active { border-bottom: 2px solid #1a73e8; color: #1a73e8; }
+    .meta { color: #666; font-size: 13px; margin: 6px 0 14px; }
+    .results-layout { display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
+    .result { margin: 18px 0; }
+    .result a { color: #1a0dab; text-decoration: none; font-size: 18px; }
+    .result a:hover { text-decoration: underline; }
+    .url { color: #006621; font-size: 13px; }
+    .snippet { color: #545454; font-size: 14px; }
+    .badge { display: inline-block; background: #f1f3f4; color: #444; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-left: 6px; }
+    .card { border: 1px solid #e0e0e0; border-radius: 10px; padding: 12px 14px; background: #fafafa; }
+    .card-title { font-weight: bold; margin-bottom: 6px; }
+    .map { height: 160px; border-radius: 8px; background: linear-gradient(135deg, #cfe8ff, #f7f7f7); display: flex; align-items: center; justify-content: center; color: #2b3a55; font-size: 13px; border: 1px solid #d2d2d2; }
+    .news-item { margin: 10px 0; }
+  </style>
+</head>
+<body>
+  {% if not query %}
+  <div class="home">
+    <div class="logo">GoogleDemo</div>
+    <form class="searchbar" action="/" method="get">
+      <input type="text" name="q" placeholder="Busca aqui" aria-label="Buscar" />
+      <button type="submit">Buscar</button>
+    </form>
+  </div>
+  {% else %}
+  <div class="header">
+    <div class="logo">GoogleDemo</div>
+    <form class="searchbar" action="/" method="get">
+      <input type="text" name="q" value="{{ query }}" aria-label="Buscar" />
+      <button type="submit">Buscar</button>
+    </form>
+  </div>
+
+  <div class="tabs">
+    <span class="active">Todo</span>
+    <span>Noticias</span>
+    <span>Imagenes</span>
+    <span>Maps</span>
+  </div>
+
+  <div class="meta">Aproximadamente 1.230.000 resultados (0,32 segundos)</div>
+
+  <div class="results-layout">
+    <div>
+      <div class="card">
+        <div class="card-title">Banco (definicion)</div>
+        <div class="snippet">
+          Un banco es una institucion financiera que recibe depositos, ofrece creditos y
+          otros servicios a clientes. En esta demo, los enlaces son locales.
+        </div>
+      </div>
+
+      <div class="result">
+        <a href="http://127.0.0.1:5000/login">bancodemo.com - login <span class="badge">Oficial</span></a>
+        <div class="url">https://bancodemo.com/login</div>
+        <div class="snippet">Acceso seguro al banco demo. Use su usuario y autenticador.</div>
+      </div>
+
+      <div class="result">
+        <a href="http://127.0.0.1:5001">bancodemo.com - secure access</a>
+        <div class="url">https://bancodemo.com/secure-access</div>
+        <div class="snippet">Ingreso rapido a su cuenta. Verifique su identidad con MFA.</div>
+      </div>
+
+      <div class="result">
+        <a href="#">Historia de la banca y servicios financieros</a>
+        <div class="url">https://ejemplo.org/historia-banca</div>
+        <div class="snippet">Resumen de la evolucion de los bancos y su rol en la economia moderna.</div>
+      </div>
+
+      <div class="result">
+        <a href="#">Tasas y productos financieros en 2026</a>
+        <div class="url">https://noticias-finanzas.com/tasas-2026</div>
+        <div class="snippet">Comparativa de cuentas, tarjetas y creditos en el mercado actual.</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-title">BancoDemo (sucursal)</div>
+        <div class="map">Mapa demo: Av. Central 123, Ciudad Demo</div>
+        <div class="snippet">Horario: 9:00 - 17:00 | Telefono: (000) 555-1234</div>
+      </div>
+
+      <div class="card" style="margin-top: 14px;">
+        <div class="card-title">Noticias</div>
+        <div class="news-item">
+          <div class="snippet">BancoDemo lanza mejoras en autenticacion MFA para 2026.</div>
+        </div>
+        <div class="news-item">
+          <div class="snippet">Bancos locales amplian horarios para clientes premium.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</body>
+</html>

